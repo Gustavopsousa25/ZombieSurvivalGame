@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Portal : BaseEnemy
 {
@@ -14,9 +15,12 @@ public class Portal : BaseEnemy
     }
     private void SpawnRandomEnemy()
     {
-            GameObject enemiePrefab = _enemies[Random.Range(0, _enemies.Length)];
-            Instantiate(enemiePrefab, transform.position, Quaternion.identity);
+        GameObject enemiePrefab = _enemies[Random.Range(0, _enemies.Length)];
+        GameObject clone = Instantiate(enemiePrefab, transform.position, Quaternion.identity);
 
+        Enemy_Walker enemy = clone.GetComponent<Enemy_Walker>();
+
+        enemy.OnEnemieDeath.AddListener();
     }
     public override void Die()
     {

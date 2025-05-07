@@ -44,7 +44,6 @@ public abstract class BaseEnemy : MonoBehaviour, IDamageable
     public virtual void Die()
     {
         _canMove = false;
-        _enemyUi.SetActive(false);
         if (_isDead == false)
         {
             _isDead = true;

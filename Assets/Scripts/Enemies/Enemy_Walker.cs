@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class Enemy_Walker : BaseEnemy
 {
     [SerializeField] private int _damage;
     [SerializeField] private float _attackSpeed, _attackRange;
     [SerializeField] private GameObject[] _drops;
-    [SerializeField]private Transform punchLocator;
+    [SerializeField] private Transform punchLocator;
+
+    public UnityEvent OnEnemieDeath;
 
     private float _timePassed;
     protected Transform _target;
@@ -77,7 +80,7 @@ public class Enemy_Walker : BaseEnemy
         _canMove = true;
         _agent.enabled = true;
     }
-    private void DropItem()
+    public void DropItem()
     {
         GameObject newDrop = Instantiate(_drops[0], transform.position, Quaternion.identity);
     }
@@ -94,9 +97,9 @@ public class Enemy_Walker : BaseEnemy
     public override void Die()
     {
         base.Die();
-        _rb.isKinematic = true;
+        _rb.velocity = Vector3.zero;
         _agent.enabled = false;
-        DropItem();
+        OnEnemieDeath?.Invoke();
     }
  
 }
