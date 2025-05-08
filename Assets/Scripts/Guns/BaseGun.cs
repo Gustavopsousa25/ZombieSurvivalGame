@@ -6,8 +6,8 @@ public abstract class BaseGun : MonoBehaviour
 {
     [SerializeField] private int _damage, _bulletSize;
     [SerializeField] private float _fireRate, _bulletSpeed;
-    [SerializeField] protected BaseBullet _bulletPrefab;
-    [SerializeField] protected GameObject _muzzleEffect;
+    [SerializeField] protected BulletPool _bulletPool;
+    [SerializeField] protected VFXPool _muzzleEffect;
     [SerializeField] protected Transform _firePoint;
 
     protected float _timePassed;
@@ -19,6 +19,8 @@ public abstract class BaseGun : MonoBehaviour
 
     private void Awake()
     {
+        _bulletPool = FindObjectOfType<BulletPool>();
+        _muzzleEffect = FindObjectOfType<VFXPool>();
         _timePassed = FireRate;
     }
     protected virtual void Update()
@@ -38,14 +40,21 @@ public abstract class BaseGun : MonoBehaviour
     }
     protected virtual void FireBullet()
     {
-        GameObject newMuzzleEffect = Instantiate(_muzzleEffect, _firePoint.position, Quaternion.identity, gameObject.transform);
+
+        GameObject newMuzzleEffect = _muzzleEffect.GetVFX(); 
+        newMuzzleEffect.transform.parent = _firePoint;
+        newMuzzleEffect.transform.position = _firePoint.position;
         newMuzzleEffect.transform.right = _firePoint.forward;
-        Destroy(newMuzzleEffect, 0.1f);
-        BaseBullet newBullet = Instantiate(_bulletPrefab, _firePoint.position, Quaternion.identity);
+        _muzzleEffect.ReturnToPool(newMuzzleEffect, .2f);
+
+        GameObject bulletPrefab = _bulletPool.GetBullet();
+        BaseBullet newBullet = bulletPrefab.GetComponent<BaseBullet>();
+
         newBullet.BulletDamage = Damage;
         newBullet.transform.localScale = Vector3.one * BulletSize;
         newBullet.Speed = BulletSpeed;
-        newBullet.transform.up = _firePoint.forward;
+        newBullet.transform.up = transform.forward;
+        newBullet.transform.position = _firePoint.position;
         newBullet.BulletMovement(transform.forward);
     }
 }

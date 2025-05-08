@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class BaseBullet : MonoBehaviour
@@ -7,13 +8,19 @@ public class BaseBullet : MonoBehaviour
     private float _speed;
     private int _BulletDamage;
     private Rigidbody _rb;
+    private float lifetime = 1.5f;
+    private float _timer;
     public int BulletDamage { get => _BulletDamage; set => _BulletDamage = value; }
     public float Speed { get => _speed; set => _speed = value; }
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        Destroy(gameObject, 2);
+        if(_timer >= lifetime)
+        {
+            BulletPool pool = FindObjectOfType<BulletPool>();
+            pool.ReturnToPool(gameObject);
+        }
     }
     public void BulletMovement(Vector3 direction)
     {
@@ -27,6 +34,7 @@ public class BaseBullet : MonoBehaviour
         {
             target.TakeDamage(BulletDamage);
         }
-        Destroy(gameObject);
+        BulletPool pool = FindObjectOfType<BulletPool>();
+        pool.ReturnToPool(gameObject);
     }
 }

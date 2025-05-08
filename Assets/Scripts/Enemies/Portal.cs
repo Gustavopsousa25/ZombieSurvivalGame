@@ -20,7 +20,7 @@ public class Portal : BaseEnemy
 
         Enemy_Walker enemy = clone.GetComponent<Enemy_Walker>();
 
-        enemy.OnEnemieDeath.AddListener();
+        
     }
     public override void Die()
     {
