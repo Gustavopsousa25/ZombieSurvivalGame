@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Inputs")]
+    [SerializeField] private InputActionReference MovementAction;
+
     [Header("Movement Settings")]
     [SerializeField]private float _movementSpeed;
 
@@ -13,18 +17,31 @@ public class PlayerController : MonoBehaviour
     private Rigidbody _rigidBody;
     private Animator _animator;
     private GameManager _gameManager;
+    private Vector2 WorldDirection = Vector2.zero;
 
     public float MovementSpeed { get => _movementSpeed; set => _movementSpeed = value; }
     public Animator PlayerAnimator { get => _animator; set => _animator = value; }
     public Rigidbody ControllerRigidBody { get => _rigidBody; set => _rigidBody = value; }
     public BaseGun EquippedGun { get => _equippedGun; set => _equippedGun = value; }
 
+    private void OnEnable()
+    {
+        MovementAction.action.Enable();
+    }
+    private void OnDisable()
+    {
+        MovementAction.action.Disable();
+    }
+    private void Awake()
+    {
+        MovementAction.action.performed += OnPlayerMove;
+        ControllerRigidBody = GetComponent<Rigidbody>();
+    }
     private void Start()
     {
         _player = GetComponent<Player>();
         _gameManager = GameManager.instance;
-        _canMove = true;
-        ControllerRigidBody = GetComponent<Rigidbody>();
+        _canMove = true;   
         PlayerAnimator = GetComponentInChildren<Animator>();
         EquippedGun = GetComponentInChildren<BaseGun>();
     }
@@ -32,18 +49,21 @@ public class PlayerController : MonoBehaviour
     {
         if(_player.IsDead != true)
         {
-            PlayerInput();
+            //PlayerInput();
             if (_gameManager.IsPaused != true)
             {
-                FaceDirection();
-                MoveInDirection(new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
-                if (_canMove != true)
+                FaceDirection();                
+                /*if (_canMove != true)
                 {
                     ControllerRigidBody.velocity = Vector3.zero;
                     PlayerAnimator.SetBool("isRuning", false);
-                }
+                }**/
             }
         }
+    }
+    private void FixedUpdate()
+    {
+        MovementDirection(WorldDirection);
     }
     private void PlayerInput()
     {
@@ -72,7 +92,13 @@ public class PlayerController : MonoBehaviour
         }
         
     }
-    private void MoveInDirection(Vector2 direction)
+    private void OnPlayerMove(InputAction.CallbackContext context) 
+    {
+        Vector2 input = context.ReadValue<Vector2>();
+        WorldDirection.x = input.x;
+        WorldDirection.y = input.y;
+    }
+    private void MovementDirection(Vector2 direction)
     {
         if (direction == Vector2.zero)
         {
@@ -83,10 +109,8 @@ public class PlayerController : MonoBehaviour
         PlayerAnimator.SetBool("isRuning", true);
 
         }
-        Vector3 finalVelocity = (direction.x * Vector3.right + direction.y * Vector3.forward).normalized * MovementSpeed;
-
-            finalVelocity.y = ControllerRigidBody.velocity.y;
-            ControllerRigidBody.velocity = finalVelocity;
+        Vector3 currentVelocity = ControllerRigidBody.velocity;
+        ControllerRigidBody.velocity = (direction.x * Vector3.right + direction.y * Vector3.forward) * MovementSpeed;
     }
     private void FaceDirection()
     {

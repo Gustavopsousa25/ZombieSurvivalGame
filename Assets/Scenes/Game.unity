@@ -58443,6 +58443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bc644bb22b986e478a0a257194535eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MovementAction: {fileID: 8016732630698767918, guid: acc44a3a86e60f541a35f8650b8fa4c2, type: 3}
   _movementSpeed: 5
 --- !u!136 &2130369400
 CapsuleCollider:
