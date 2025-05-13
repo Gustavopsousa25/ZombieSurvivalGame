@@ -45,7 +45,7 @@ public abstract class BaseGun : MonoBehaviour
         newMuzzleEffect.transform.parent = _firePoint;
         newMuzzleEffect.transform.position = _firePoint.position;
         newMuzzleEffect.transform.right = _firePoint.forward;
-        _muzzleEffect.ReturnToPool(newMuzzleEffect, .2f);
+        StartCoroutine(TimeToReturn(newMuzzleEffect, 0.15f));
 
         GameObject bulletPrefab = _bulletPool.GetBullet();
         BaseBullet newBullet = bulletPrefab.GetComponent<BaseBullet>();
@@ -56,5 +56,11 @@ public abstract class BaseGun : MonoBehaviour
         newBullet.transform.up = transform.forward;
         newBullet.transform.position = _firePoint.position;
         newBullet.BulletMovement(transform.forward);
+    }
+    IEnumerator TimeToReturn( GameObject effect,float time)
+    {
+
+        yield return new WaitForSeconds(time);
+        _muzzleEffect.ReturnToPool(effect);
     }
 }

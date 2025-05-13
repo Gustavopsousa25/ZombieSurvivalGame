@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Inputs")]
     [SerializeField] private InputActionReference MovementAction;
+    [SerializeField] private InputActionReference ShootAction;
 
     [Header("Movement Settings")]
     [SerializeField]private float _movementSpeed;
@@ -27,14 +28,20 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         MovementAction.action.Enable();
+        ShootAction.action.Enable();
     }
     private void OnDisable()
     {
         MovementAction.action.Disable();
+        ShootAction.action.Disable();
     }
     private void Awake()
     {
         MovementAction.action.performed += OnPlayerMove;
+        MovementAction.action.canceled += OnPlayerMoveCancelled;
+        ShootAction.action.started += OnPlayerFire;
+        ShootAction.action.canceled += OnPlayerFire;
+
         ControllerRigidBody = GetComponent<Rigidbody>();
     }
     private void Start()
@@ -49,15 +56,10 @@ public class PlayerController : MonoBehaviour
     {
         if(_player.IsDead != true)
         {
-            //PlayerInput();
+            
             if (_gameManager.IsPaused != true)
             {
-                FaceDirection();                
-                /*if (_canMove != true)
-                {
-                    ControllerRigidBody.velocity = Vector3.zero;
-                    PlayerAnimator.SetBool("isRuning", false);
-                }**/
+                FaceDirection();                 
             }
         }
     }
@@ -65,38 +67,16 @@ public class PlayerController : MonoBehaviour
     {
         MovementDirection(WorldDirection);
     }
-    private void PlayerInput()
-    {
-        if(_gameManager.IsPaused != true)
-        {
-            if (Input.GetKey(KeyCode.Mouse0))
-            {
-                FireGun();
-            }
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                _player.InteractWithObject();
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Escape) && _gameManager.PowerUpMenuActive == false)
-        {
-            if(_gameManager.IsPaused == true)
-            {
-                _gameManager.ResumeGame();
-            }
-            else
-            {
-                _gameManager.PauseGame();
-            }
-
-        }
-        
-    }
+    
     private void OnPlayerMove(InputAction.CallbackContext context) 
     {
         Vector2 input = context.ReadValue<Vector2>();
         WorldDirection.x = input.x;
         WorldDirection.y = input.y;
+    }
+    private void OnPlayerMoveCancelled(InputAction.CallbackContext context)
+    {
+        WorldDirection = new Vector2(0,0);
     }
     private void MovementDirection(Vector2 direction)
     {
@@ -126,13 +106,22 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private void FireGun()
+    private void OnPlayerFire(InputAction.CallbackContext context)
     {
-        if (EquippedGun != null)
+        if (context.started)
         {
-            StartCoroutine(MoveWaitTime());
-            EquippedGun.Shoot();
-        }  
+            if (EquippedGun != null)
+            {
+                StartCoroutine(MoveWaitTime());
+                EquippedGun.Shoot();
+            }
+
+        } 
+        else if (context.canceled)
+        {
+            return;
+        }
+         
     }
     IEnumerator MoveWaitTime() 
     {

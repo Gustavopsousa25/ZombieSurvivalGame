@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -12,6 +13,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _pauseMenu, _gameOverMenu, _winMenu, _playerUI, _powerUpsMenu, _npcMenu;
     public static UIManager instance;
 
+    private StringBuilder timeLeftText = new StringBuilder();
     private void Awake()
     {
         if (instance == null)
@@ -25,6 +27,7 @@ public class UIManager : MonoBehaviour
     }
     private void Start()
     {
+        timeLeftText.Append("Time Left: ");
         HidePauseMenu();
         HideWinMenu();
         HideGameoverMenu();
@@ -43,7 +46,9 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateTimer(int time)
     {
-        _timer.text = "Time Left: " + time.ToString();
+        timeLeftText = timeLeftText.Append(time);
+        _timer.text = timeLeftText.ToString();
+        timeLeftText.Remove(11, 30);
     }
     public void UpdatePortals(int portalsLeft, int totalPortals)
     {

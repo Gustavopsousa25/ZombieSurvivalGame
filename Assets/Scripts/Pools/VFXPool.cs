@@ -25,9 +25,14 @@ public class VFXPool : MonoBehaviour
         vfxObj.SetActive(true);
         return vfxObj;
     }
-    public void ReturnToPool(GameObject vfxObj, float time)
+    public void ReturnToPool(GameObject vfxObj)
     {
         vfxObj.SetActive(false);
         pool.Enqueue(vfxObj);
+    }
+
+    public IEnumerator TimeToReturn(float time)
+    {
+        yield return new WaitForSeconds(time);
     }
 }
