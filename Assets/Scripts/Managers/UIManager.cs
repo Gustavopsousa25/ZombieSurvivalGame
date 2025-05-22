@@ -12,8 +12,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _currencyText, _interactText, _timer, _portalText;
     [SerializeField] private GameObject _pauseMenu, _gameOverMenu, _winMenu, _playerUI, _powerUpsMenu, _npcMenu;
     public static UIManager instance;
-
-    private StringBuilder timeLeftText = new StringBuilder();
     private void Awake()
     {
         if (instance == null)
@@ -27,7 +25,6 @@ public class UIManager : MonoBehaviour
     }
     private void Start()
     {
-        timeLeftText.Append("Time Left: ");
         HidePauseMenu();
         HideWinMenu();
         HideGameoverMenu();
@@ -46,9 +43,7 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateTimer(int time)
     {
-        timeLeftText = timeLeftText.Append(time);
-        _timer.text = timeLeftText.ToString();
-        timeLeftText.Remove(11, 30);
+        _timer.text = $"Time Left: {time}";
     }
     public void UpdatePortals(int portalsLeft, int totalPortals)
     {

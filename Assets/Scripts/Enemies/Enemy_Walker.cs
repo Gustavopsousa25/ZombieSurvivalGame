@@ -54,7 +54,7 @@ public class Enemy_Walker : BaseEnemy
             }
         }
     }
-    protected void Attack()
+    public void Attack()
     {
         if (_isDead == false) 
         {
