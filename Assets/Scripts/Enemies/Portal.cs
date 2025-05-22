@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,14 @@ using UnityEngine.Events;
 
 public class Portal : BaseEnemy
 {
-    [SerializeField] private GameObject[] _enemies;
+    [SerializeField] private ObjectPool _enemyPool;
     [SerializeField] private float _spawnRate;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        _enemyPool = GetComponent<ObjectPool>();
+    }
     protected override void Start()
     {
         GameManager.instance.PortalsLeft ++;
@@ -15,12 +21,12 @@ public class Portal : BaseEnemy
     }
     private void SpawnRandomEnemy()
     {
-        GameObject enemiePrefab = _enemies[Random.Range(0, _enemies.Length)];
+       /* GameObject enemiePrefab = _enemyPool[Random.Range(0, _enemyPool.Length)];
         GameObject clone = Instantiate(enemiePrefab, transform.position, Quaternion.identity);
 
         Enemy_Walker enemy = clone.GetComponent<Enemy_Walker>();
-
-        
+       */
+       SetUpEnemies();
     }
     public override void Die()
     {
@@ -28,7 +34,16 @@ public class Portal : BaseEnemy
         _collider.isTrigger = true;
         _canMove = false;
         _isDead = true;
-        Destroy(gameObject);
         GameManager.instance.PortalDestoyed();
+        Destroy(gameObject);
+    }
+    public void SetUpEnemies()
+    {
+        GameObject enemy = _enemyPool.GetObject();
+        Enemy_Walker enemyScript = enemy.GetComponent<Enemy_Walker>();
+        enemyScript.SetDefaultValues();
+        enemy.transform.position = transform.position;
+        enemyScript.OnEnemieDeath += () => _enemyPool.ReturnToPool(enemy);
+         
     }
 }

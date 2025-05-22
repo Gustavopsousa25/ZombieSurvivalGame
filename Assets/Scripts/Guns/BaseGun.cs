@@ -6,8 +6,7 @@ public abstract class BaseGun : MonoBehaviour
 {
     [SerializeField] private int _damage, _bulletSize;
     [SerializeField] private float _fireRate, _bulletSpeed;
-    [SerializeField] protected BulletPool _bulletPool;
-    [SerializeField] protected VFXPool _muzzleEffect;
+    protected ObjectPool _bulletPool, _vfxPool;
     [SerializeField] protected Transform _firePoint;
 
     protected float _timePassed;
@@ -19,8 +18,8 @@ public abstract class BaseGun : MonoBehaviour
 
     private void Awake()
     {
-        _bulletPool = FindObjectOfType<BulletPool>();
-        _muzzleEffect = FindObjectOfType<VFXPool>();
+        _bulletPool = GameObject.FindGameObjectWithTag("BulletPool").GetComponent<ObjectPool>();
+        _vfxPool = GameObject.FindGameObjectWithTag("VFXPool").GetComponent<ObjectPool>();
         _timePassed = FireRate;
     }
     protected virtual void Update()
@@ -40,16 +39,20 @@ public abstract class BaseGun : MonoBehaviour
     }
     protected virtual void FireBullet()
     {
+        SetUpBullet();
+        SetUpVFX();
+    }
+    IEnumerator TimeToReturn( GameObject effect,float time)
+    {
 
-        GameObject newMuzzleEffect = _muzzleEffect.GetVFX(); 
-        newMuzzleEffect.transform.parent = _firePoint;
-        newMuzzleEffect.transform.position = _firePoint.position;
-        newMuzzleEffect.transform.right = _firePoint.forward;
-        StartCoroutine(TimeToReturn(newMuzzleEffect, 0.15f));
+        yield return new WaitForSeconds(time);
+        _vfxPool.ReturnToPool(effect);
+    }
 
-        GameObject bulletPrefab = _bulletPool.GetBullet();
+    private void SetUpBullet()
+    {
+        GameObject bulletPrefab = _bulletPool.GetObject();
         BaseBullet newBullet = bulletPrefab.GetComponent<BaseBullet>();
-
         newBullet.BulletDamage = Damage;
         newBullet.transform.localScale = Vector3.one * BulletSize;
         newBullet.Speed = BulletSpeed;
@@ -57,10 +60,13 @@ public abstract class BaseGun : MonoBehaviour
         newBullet.transform.position = _firePoint.position;
         newBullet.BulletMovement(transform.forward);
     }
-    IEnumerator TimeToReturn( GameObject effect,float time)
+    private void SetUpVFX()
     {
-
-        yield return new WaitForSeconds(time);
-        _muzzleEffect.ReturnToPool(effect);
+        GameObject newMuzzleEffect = _vfxPool.GetObject();
+        newMuzzleEffect.transform.parent = _firePoint;
+        newMuzzleEffect.transform.position = _firePoint.position;
+        newMuzzleEffect.transform.right = _firePoint.forward;
+        StartCoroutine(TimeToReturn(newMuzzleEffect, 0.2f));
     }
+
 }

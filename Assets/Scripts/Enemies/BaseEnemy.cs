@@ -47,9 +47,16 @@ public abstract class BaseEnemy : MonoBehaviour, IDamageable
         if (_isDead == false)
         {
             _isDead = true;
+            _enemyUi?.SetActive(false);
             _animator.SetTrigger("isDead");
         }
-        Destroy(gameObject, 1.5f);
-        _collider.isTrigger = true;
+    }
+    public void SetDefaultValues()
+    {
+        UpdateHealthBar(_hp, _maxHP);
+        _hp = _maxHP;
+        _enemyUi.SetActive(false);
+        _isDead = false;
+        _canMove = true;
     }
 }

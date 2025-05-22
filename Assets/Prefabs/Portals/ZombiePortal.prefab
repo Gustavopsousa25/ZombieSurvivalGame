@@ -16,7 +16,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &1348285038190580959
 RectTransform:
@@ -92,7 +92,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &2270807207823048980
 RectTransform:
@@ -163,12 +163,13 @@ GameObject:
   - component: {fileID: 1040569942054233357}
   - component: {fileID: 5612808247626350455}
   - component: {fileID: -7867710340572739900}
+  - component: {fileID: 3354015697067125146}
   m_Layer: 7
   m_Name: ZombiePortal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1212683129927014749
 Transform:
@@ -202,8 +203,7 @@ MonoBehaviour:
   _maxHP: 10
   _hpBar: {fileID: 5953033754952237877}
   _enemyUi: {fileID: 6699766026069045991}
-  _enemies:
-  - {fileID: 3884540464952050660, guid: a66bcc1255eb59145a7b0df45e16bcb1, type: 3}
+  _enemyPool: {fileID: 0}
   _spawnRate: 3.5
 --- !u!65 &5612808247626350455
 BoxCollider:
@@ -242,6 +242,20 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0.21}
   m_TimeToStationary: 0.5
+--- !u!114 &3354015697067125146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4304085990938526608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 638f3397063d147428f2188f6590b3ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _objPrefab: {fileID: 3884540464952050660, guid: a66bcc1255eb59145a7b0df45e16bcb1, type: 3}
+  _poolSize: 10
 --- !u!1 &6699766026069045991
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,7 +274,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &5866984355882297010
 RectTransform:
@@ -369,6 +383,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PortalThree
       objectReference: {fileID: 0}
+    - target: {fileID: 5796736942433186020, guid: ad1b178074e9f794d974b6df80c99387, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 6269290523108190671, guid: ad1b178074e9f794d974b6df80c99387, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 6573554674625768030, guid: ad1b178074e9f794d974b6df80c99387, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.5
@@ -424,6 +446,10 @@ PrefabInstance:
     - target: {fileID: 6573554674625768030, guid: ad1b178074e9f794d974b6df80c99387, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8822324460321048490, guid: ad1b178074e9f794d974b6df80c99387, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6679766616786591923, guid: ad1b178074e9f794d974b6df80c99387, type: 3}

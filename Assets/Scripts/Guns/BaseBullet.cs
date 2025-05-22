@@ -8,7 +8,7 @@ public class BaseBullet : MonoBehaviour
     private float _speed;
     private int _BulletDamage;
     private Rigidbody _rb;
-    private float lifetime = 1.5f;
+    private float lifetime = 1f;
     private float _timer;
     public int BulletDamage { get => _BulletDamage; set => _BulletDamage = value; }
     public float Speed { get => _speed; set => _speed = value; }
@@ -18,7 +18,7 @@ public class BaseBullet : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         if(_timer >= lifetime)
         {
-            BulletPool pool = FindObjectOfType<BulletPool>();
+            ObjectPool pool = GameObject.FindGameObjectWithTag("BulletPool").GetComponent<ObjectPool>();
             pool.ReturnToPool(gameObject);
         }
     }
@@ -34,7 +34,7 @@ public class BaseBullet : MonoBehaviour
         {
             target.TakeDamage(BulletDamage);
         }
-        BulletPool pool = FindObjectOfType<BulletPool>();
+        ObjectPool pool = GameObject.FindGameObjectWithTag("BulletPool").GetComponent<ObjectPool>();
         pool.ReturnToPool(gameObject);
     }
 }

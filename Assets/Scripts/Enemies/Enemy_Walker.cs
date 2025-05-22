@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,10 +11,9 @@ public class Enemy_Walker : BaseEnemy
     [SerializeField] private float _attackSpeed, _attackRange;
     [SerializeField] private GameObject[] _drops;
     [SerializeField] private Transform punchLocator;
-
-    public UnityEvent OnEnemieDeath;
-
+    public Action OnEnemieDeath;
     private float _timePassed;
+    private Portal _portal;
     protected Transform _target;
     private NavMeshAgent _agent;
     private Rigidbody _rb;
@@ -29,6 +29,7 @@ public class Enemy_Walker : BaseEnemy
         _agent = GetComponent<NavMeshAgent>();
         _target = Player.instance.transform;
         _rb = GetComponent<Rigidbody>();
+        _portal = GetComponentInParent<Portal>();    
         _canMove = true;
     }
     protected virtual void Update()
@@ -98,7 +99,6 @@ public class Enemy_Walker : BaseEnemy
     {
         base.Die();
         _rb.velocity = Vector3.zero;
-        _agent.enabled = false;
         OnEnemieDeath?.Invoke();
     }
  
