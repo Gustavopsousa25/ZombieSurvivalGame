@@ -11,7 +11,6 @@ public class Enemy_Walker : BaseEnemy
     [SerializeField] private float _attackSpeed, _attackRange;
     [SerializeField] private GameObject[] _drops;
     [SerializeField] private Transform punchLocator;
-    public Action OnEnemieDeath;
     private float _timePassed;
     private Portal _portal;
     protected Transform _target;
@@ -99,7 +98,6 @@ public class Enemy_Walker : BaseEnemy
     {
         base.Die();
         _rb.velocity = Vector3.zero;
-        OnEnemieDeath?.Invoke();
     }
  
 }

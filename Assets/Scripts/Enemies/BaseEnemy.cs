@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,7 @@ public abstract class BaseEnemy : MonoBehaviour, IDamageable
     [SerializeField] private int _maxHP;
     [SerializeField] private Image _hpBar;
     [SerializeField] protected GameObject _enemyUi;
-
+    public Action OnEnemieDeath;
     protected bool _canMove, _isDead;
     protected int _hp;
     protected Player _player;
@@ -49,6 +50,7 @@ public abstract class BaseEnemy : MonoBehaviour, IDamageable
             _isDead = true;
             _enemyUi?.SetActive(false);
             _animator.SetTrigger("isDead");
+            OnEnemieDeath?.Invoke();
         }
     }
     public void SetDefaultValues()
